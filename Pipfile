@@ -1,0 +1,32 @@
+[[source]]
+url = "https://pypi.doubanio.com/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "==1.0.2"
+markupsafe = "==1.0"
+werkzeug = "==0.14.1"
+"jinja2" = "==2.10"
+itsdangerous = "==0.24"
+click = ">=5.0"
+flask-sqlalchemy = "==2.3.2"
+"psycopg2" = "==2.7.5"
+sqlalchemy = "==1.2.9"
+flask-migrate = "==2.2.0"
+flask-wtf = "==0.14.2"
+wtforms = "==2.2.1"
+gunicorn = ">=19.1.1"
+flask-webpack = "==0.1.0"
+flask-login = "==0.4.1"
+flask-bcrypt = "==0.7.1"
+flask-caching = ">=1.0.0"
+flask-debugtoolbar = "==0.10.1"
+pymysql = "*"
+pytest = "*"
+webtest = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

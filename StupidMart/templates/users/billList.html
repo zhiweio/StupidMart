@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>超市账单管理系统</title>
+    <link rel="stylesheet" href="../../static/assets/css/public.css"/>
+    <link rel="stylesheet" href="../../static/assets/css/style.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<!--头部-->
+    <header class="publicHeader">
+        <h1>超市账单管理系统</h1>
+        <div class="publicHeaderR">
+            <p><span>下午好！</span><span style="color: #fff21b"> Admin </span> , 欢迎你！</p>
+            <a href="/logout/">退出</a>
+        </div>
+    </header>
+<!--时间-->
+    <section class="publicTime">
+        <span id="time">2015年1月1日 11:11  星期一</span>
+        <a href="#">温馨提示：为了能正常浏览，请使用高版本浏览器！（IE10+）</a>
+    </section>
+<!--主体内容-->
+    <section class="publicMian ">
+        <div class="left">
+            <h2 class="leftH2"><span class="span1"></span>功能列表 <span></span></h2>
+            <nav>
+                <ul class="list">
+                <li id="active"><a href="/user/bills/">账单管理</a></li>
+                <li><a href="/user/providers/">供应商管理</a></li>
+                <li><a href="/admin/">用户管理</a></li>
+                <li><a href="/user/change_password/">密码修改</a></li>
+                <li><a href="/logout/">退出系统</a></li>
+            </ul>
+            </nav>
+        </div>
+        <div class="right">
+            <div class="location">
+                <strong>你现在所在的位置是:</strong>
+                <span>账单管理页面</span>
+            </div>
+            <div class="search">
+                <span>商品名称：</span>
+                <input type="text" placeholder="请输入商品的名称"/>
+
+                <span>供应商：</span>
+               <!--  <select name="tigong" >
+                    <option value="">--请选择--</option>
+                    <option value="">北京市粮油总公司</option>
+                    <option value="">邯郸市五得利面粉厂</option>
+                </select> -->
+                <input type="text" placeholder="请输入供应商的名称"/>
+
+                <span>是否付款：</span>
+                <select name="fukuan">
+                    <option value="">--请选择--</option>
+                    <option value="">已付款</option>
+                    <option value="">未付款</option>
+                </select>
+
+                <input type="button" value="查询"/>
+                <!-- <a href="billAdd.html">添加订单</a> -->
+            </div>
+
+            <!--账单表格 样式和供应商公用-->
+            <div id="app">
+                <template>
+                    <el-button size="mini" @click="addOne">+</el-button>
+                  <el-table :data="tableData"
+                            stripe
+                            highlight-current-row
+                            border
+                            style="width: 100%"
+                            class="el-tb-edit"
+                            @current-change="handleCurrentChange"
+                            ref="demoTable">
+                    <el-table-column fixed prop="bill_sn" label="账单编码" width="150">
+                        <template slot-scope="scope">
+                            <el-input size="small" v-model="scope.row.bill_sn" placeholder="请输入内容"></el-input>
+                            <!-- <span>{[scope.row.bill_sn]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="product" label="产品名称" width="120">
+                        <template slot-scope="scope">
+                            <el-input size="small" v-model="scope.row.product" placeholder="请输入内容"></el-input>
+                            <!-- <span>{[scope.row.product]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="is_paid" label="是否付款" width="120">
+                        <template slot-scope="scope">
+                            <el-select v-model="scope.row.is_paid" clearable placeholder="请选择">
+                                <el-option
+                                  v-for="item in paidOptions"
+                                  :key="item.value"
+                                  :label="item.label"
+                                  :value="item.value"
+                                  size="small">
+                                </el-option>
+                            </el-select>
+                            <!-- <span>{[scope.row.is_paid]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="amount" label="金额" width="150">
+                        <template slot-scope="scope">
+                            <el-input-number v-model="scope.row.amount"
+                            size="small" :min="0.00" :max="99999999999.9999"></el-input-number>
+                            <!-- <span>{[scope.row.amount]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="unit" label="单位" width="120">
+                        <template slot-scope="scope">
+                            <el-input size="small" v-model="scope.row.unit" placeholder="请输入内容"></el-input>
+                            <!-- <span>{[scope.row.unit]}</span> -->
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="provider_name" label="供应商" width="150">
+                        <template slot-scope="scope">
+                            <el-input size="small" v-model="scope.row.provider_name" placeholder="请输入内容"></el-input>
+                            <!-- <span>{[scope.row.provider_name]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="numbers" label="数量" width="150">
+                        <template slot-scope="scope">
+                            <el-input-number v-model="scope.row.numbers"
+                            size="small" :min="0" :max="99999999"></el-input-number>
+                            <!-- <span>{[scope.row.numbers]}</span> -->
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column prop="created_at" label="时间" width="150">
+                        <template slot-scope="scope">
+<!--                             <el-date-picker
+                                  v-model="scope.row.created_at"
+                                  type="date"
+                                  size="small"
+                                  placeholder="选择日期">
+                            </el-date-picker> -->
+                            <span>{[scope.row.created_at]}</span>
+                        </template>
+                    </el-table-column>
+
+                    <el-table-column label="操作" width="300">
+                      <template slot-scope="scope">
+                          <el-button
+                               size="mini"
+                               type="danger"
+                               icon="el-icon-delete"
+                               @click="handleDelete(scope.$index, scope.row)">删除
+                          </el-button>
+                          <el-button
+                               size="mini"
+                               type="success"
+                               icon="el-icon-edit"
+                               @click="handleEdit(scope.$index, scope.row)">更新
+                          </el-button>
+                          <el-button
+                               size="mini"
+                               type="primary"
+                               icon="el-icon-upload"
+                               @click="handleAdd(scope.$index)">提交
+                          </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+            </div>
+
+        </div>
+    </section>
+
+
+
+<script src="../../static/assets/js/jquery.js"></script>
+<script src="../../static/assets/js/js.js"></script>
+<script src="../../static/assets/js/time.js"></script>
+
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/element-ui@2.4.4/lib/index.js"></script>
+
+<script>
+    var app;
+    (function () {
+        app = new Vue({
+            el: "#app",
+            delimiters: ['{[', ']}'],
+            data: {
+                tableData: [],
+                paidOptions: [{
+                    value: 'yes',
+                    label: ' 已付款'
+                    }, {
+                    value: 'no',
+                    label: '未付款'
+                }],
+                currentRow: null,
+            },
+            created: function () {
+                Vue.prototype.$http = axios;
+                axios.get('/user/api/bill/list/')
+                    .then(function (res) {
+                        if (res.data.status_code === 0) {
+                            var bills = res.data.data;
+                            this.app.tableData = bills;
+                        }
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            },
+            methods: {
+                handleCurrentChange(val) {
+                    this.currentRow = val;
+                },
+                addOne() {
+                    let d = {
+                        bill_sn: "",
+                        created_at: new Date().toISOString().split('T')[0],
+                        product: "",
+                        unit: "",
+                        is_paid: 'no',
+                        amount: 0.00,
+                        numbers: 0,
+                        provider_name: ""
+                    };
+                    app.tableData.push(d);
+                    setTimeout(() => { this.$refs.demoTable.setCurrentRow(d); }, 10);//<==用于延时渲染后选中这行
+                },
+                handleDelete(index, deleteCount) {
+                    // let row = JSON.stringify(app.tableData[index]);
+                    let row = app.tableData[index];
+                    let url = '/user/api/bill/delete/';
+                    if (row['bill_sn'] !== "") {
+                        axios.post(url, {"bill_sn": row['bill_sn']})
+                            .then(function (res) {
+                                // if (res.data['status_code'] === 0)
+                                    app.tableData.splice(index, 1);
+                                    alert(res.data['messages']);
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
+                    else {
+                        app.tableData.splice(index, 1);
+                    }
+                },
+                handleAdd(index) {
+                    let row = app.tableData[index];
+                    let url = '/user/api/bill/add/';
+                    axios.post(url, row)
+                        .then(function (res) {
+                            // if (res.data['status_code'] === 0)
+                                alert(res.data['messages']);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                },
+                handleEdit(index) {
+                    let row = app.tableData[index];
+                    let url = '/user/api/bill/edit/';
+                    if (row['bill_sn'] !== "") {
+                        axios.post(url, row)
+                            .then(function (res) {
+                                // if (res.data['status_code'] === 0)
+                                    alert(res.data['messages']);
+                            })
+                            .catch(function (error) {
+                                console.log("failed")
+                            });
+                    }
+                    else {
+                        console.log('failed')
+                    }
+                }
+            }
+        });
+    })()
+</script>
+
+</body>
+</html>
