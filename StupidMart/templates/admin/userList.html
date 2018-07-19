@@ -54,7 +54,7 @@
     <header class="publicHeader">
         <h1>超市账单管理系统</h1>
         <div class="publicHeaderR">
-            <p><span>下午好！</span><span style="color: #fff21b"> Admin</span> , 欢迎你！</p>
+            <p><span>下午好！</span><span style="color: #fff21b">{{ current_user.username }}</span> , 欢迎你！</p>
             <a href="/logout/">退出</a>
         </div>
     </header>
@@ -315,8 +315,10 @@
                     let row = app.tableData[index];
                     let url = '/admin/api/edit/';
                     if (row['user_sn'] !== "") {
-                        var birthday = row['birthday'];
-                        birthday = birthday.toISOString().split('T')[0];
+                        let birthday = row['birthday'];
+                        if (birthday instanceof Date) {
+                            row['birthday'] = birthday.toISOString().split('T')[0];
+                        }
                         axios.post(url, row)
                             .then(function (res) {
                                 if (res.data['status_code'] === 0) {
