@@ -25,7 +25,8 @@ def user_add():
         username = data.get('username', None)
         password = data.get('password', None)
         confirm_password = data.get('confirm_password', None)
-        gender = 0 if data.get('gender', 'man') == 'man' else 1
+        # ç”·: 0ï¼Œ å¥³ï¼š1
+        gender = 0 if data.get('gender', 'ç”·') == 'ç”·' else 1
         birthday = data.get('birthday', '1970-01-01')
         telephone = data.get('telephone', None)
         address = data.get('address', None)
@@ -48,7 +49,7 @@ def user_add():
 
 # Add api
 # --------------------------------------------------------
-# TODO: ¸ÄÇ°¶Ë´úÂë£¬±íµ¥Êı¾İÒì²½Ìá½»£¬Ò³Ãæ·ÃÎÊÓëjson ½Ó¿Ú·ÖÀë
+# TODO: æ”¹å‰ç«¯ä»£ç ï¼Œè¡¨å•æ•°æ®å¼‚æ­¥æäº¤ï¼Œé¡µé¢è®¿é—®ä¸json æ¥å£åˆ†ç¦»
 # --------------------------------------------------------
 # @blueprint.route('/api/add/', methods=['GET', 'POST'])
 # @login_required
@@ -161,7 +162,8 @@ def api_user_list():
                 birthday = user.birthday
                 today = date.today()
                 age = birthday.year - today.year
-                gender = 'man' if user.gender else 'woman'
+                # ç”·: 0ï¼Œ å¥³ï¼š1
+                gender = 'å¥³' if user.gender else 'ç”·'
                 user_data.append({
                     'user_sn': user.user_sn,
                     'username': user.username,

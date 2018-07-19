@@ -2,6 +2,7 @@
 """User views."""
 
 # import json
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 
@@ -214,7 +215,7 @@ def api_bill_add():
         numbers = float(data.get('numbers', '0.00'))
         amount = float(data.get('amount', '0.00'))
         provider_name = data.get('provider_name', None)
-        is_paid = 0 if data.get('is_paid', 'no') == 0 else 1
+        is_paid = 0 if data.get('is_paid', '未付款') == '未付款' else 1
 
         if bill_sn and product and unit and provider_name:
             provider = Provider.query.filter_by(
@@ -241,7 +242,7 @@ def api_bill_add():
 @login_required
 def api_bill_delete():
     if request.method == 'POST':
-        bill_sn = request.args.get('bill_sn', None)
+        bill_sn = request.get_json().get('bill_sn', None)
         if bill_sn:
             bill = Bill.query.filter_by(
                 bill_sn=bill_sn).first()
@@ -275,7 +276,7 @@ def api_bill_edit():
         numbers = float(data.get('numbers', '0.00'))
         amount = float(data.get('amount', '0.00'))
         provider_name = data.get('provide_rname', None)
-        is_paid = 0 if data.get('is_paid', 'no') == 0 else 1
+        is_paid = 0 if data.get('is_paid', '未付款') == '未付款' else 1
 
         if bill_sn and product and unit and provider_name:
             bill = Bill.query.filter_by(bill_sn=bill_sn).first()
@@ -313,15 +314,16 @@ def api_bill_list():
         bills = Bill.query.all()
         if bills:
             for bill in bills:
-                created_time = bill.created_time
-                created_date = created_time.strftime('%Y-%m-%d %H:%M')
-                bill_add.append({
+                created_at = bill.created_at.strftime('%Y-%m-%d %H:%M')
+                bill_data.append({
                     'bill_sn': bill.bill_sn,
                     'product': bill.product,
                     'provider_name': bill.provider.provider_name,
-                    'amonut': bill.amonut,
+                    'unit': bill.unit,
+                    'numbers': bill.numbers,
+                    'amount': float(bill.amount),
                     'is_paid': bill.is_paid,
-                    'date': created_date
+                    'created_at': created_at
                 })
             messages = 'Get bills data successful.'
             status_code = 0
@@ -349,11 +351,10 @@ def api_bill_search():
                     'product': bill.product,
                     'unit': bill.unit,
                     'numbers': bill.numbers,
-                    'amount': bill.amount,
+                    'amount': float(bill.amount),
                     'provider_name': bill.provider.provider_name,
-                    'contact': bill.contact,
                     'is_paid': bill.is_paid,
-                    'date': created_at
+                    'created_at': created_at
                 }
                 messages = 'Get bills data successful.'
                 status_code = 0
