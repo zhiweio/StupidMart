@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
@@ -6,6 +6,48 @@
     <link rel="stylesheet" href="../../static/assets/css/public.css"/>
     <link rel="stylesheet" href="../../static/assets/css/style.css"/>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #495060;
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #fff;
+        }
+
+        /* 可编辑表格 */
+
+        .el-tb-edit .el-input,
+        .el-tb-edit .el-input-number,
+        .el-tb-edit .el-select {
+            display: none;
+            width: 100%;
+        }
+
+        .el-tb-edit .current-row .el-input,
+        .el-tb-edit .current-row .el-input-number,
+        .el-tb-edit .current-row .el-select {
+            display: inherit;
+        }
+
+        .el-tb-edit .current-row .el-input+span,
+        .el-tb-edit .current-row .el-input-number+span,
+        .el-tb-edit .current-row .el-select+span {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <!--头部-->
@@ -75,17 +117,17 @@
                             class="el-tb-edit"
                             @current-change="handleCurrentChange"
                             ref="demoTable">
-                    <el-table-column fixed prop="bill_sn" label="账单编码" width="150">
+                    <el-table-column fixed prop="bill_sn" label="账单编码" width="200">
                         <template slot-scope="scope">
                             <el-input size="small" v-model="scope.row.bill_sn" placeholder="请输入内容"></el-input>
-                            <!-- <span>{[scope.row.bill_sn]}</span> -->
+                            <span>{[scope.row.bill_sn]}</span>
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="product" label="产品名称" width="120">
+                    <el-table-column prop="product" label="产品名称" width="200">
                         <template slot-scope="scope">
                             <el-input size="small" v-model="scope.row.product" placeholder="请输入内容"></el-input>
-                            <!-- <span>{[scope.row.product]}</span> -->
+                            <span>{[scope.row.product]}</span>
                         </template>
                     </el-table-column>
 
@@ -100,7 +142,9 @@
                                   size="small">
                                 </el-option>
                             </el-select>
-                            <!-- <span>{[scope.row.is_paid]}</span> -->
+                            <span>{[scope.row.is_paid]}</span>
+                            <!-- <span v-if=" is_paid === 'yes'">已付款</span> -->
+                            <!-- <span v-else>未付款</span> -->
                         </template>
                     </el-table-column>
 
@@ -108,20 +152,20 @@
                         <template slot-scope="scope">
                             <el-input-number v-model="scope.row.amount"
                             size="small" :min="0.00" :max="99999999999.9999"></el-input-number>
-                            <!-- <span>{[scope.row.amount]}</span> -->
+                            <span>{[scope.row.amount]}</span>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="unit" label="单位" width="120">
                         <template slot-scope="scope">
                             <el-input size="small" v-model="scope.row.unit" placeholder="请输入内容"></el-input>
-                            <!-- <span>{[scope.row.unit]}</span> -->
+                            <span>{[scope.row.unit]}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="provider_name" label="供应商" width="150">
+                    <el-table-column prop="provider_name" label="供应商" width="200">
                         <template slot-scope="scope">
                             <el-input size="small" v-model="scope.row.provider_name" placeholder="请输入内容"></el-input>
-                            <!-- <span>{[scope.row.provider_name]}</span> -->
+                            <span>{[scope.row.provider_name]}</span>
                         </template>
                     </el-table-column>
 
@@ -129,18 +173,12 @@
                         <template slot-scope="scope">
                             <el-input-number v-model="scope.row.numbers"
                             size="small" :min="0" :max="99999999"></el-input-number>
-                            <!-- <span>{[scope.row.numbers]}</span> -->
+                            <span>{[scope.row.numbers]}</span>
                         </template>
                     </el-table-column>
 
                     <el-table-column prop="created_at" label="时间" width="150">
                         <template slot-scope="scope">
-<!--                             <el-date-picker
-                                  v-model="scope.row.created_at"
-                                  type="date"
-                                  size="small"
-                                  placeholder="选择日期">
-                            </el-date-picker> -->
                             <span>{[scope.row.created_at]}</span>
                         </template>
                     </el-table-column>
@@ -194,12 +232,13 @@
             data: {
                 tableData: [],
                 paidOptions: [{
-                    value: 'yes',
+                    value: '已付款',
                     label: ' 已付款'
                     }, {
-                    value: 'no',
+                    value: '未付款',
                     label: '未付款'
                 }],
+                test: "test",
                 currentRow: null,
             },
             created: function () {
@@ -207,7 +246,16 @@
                 axios.get('/user/api/bill/list/')
                     .then(function (res) {
                         if (res.data.status_code === 0) {
-                            var bills = res.data.data;
+                            let bills = res.data.data;
+                            for (x in bills) {
+                                let is_paid = bills[x].is_paid;
+                                if (is_paid === true) {
+                                    bills[x].is_paid = "已付款";
+                                }
+                                else {
+                                    bills[x].is_paid = '未付款';
+                                }
+                            }
                             this.app.tableData = bills;
                         }
                 }).catch(function (error) {
@@ -224,7 +272,7 @@
                         created_at: new Date().toISOString().split('T')[0],
                         product: "",
                         unit: "",
-                        is_paid: 'no',
+                        is_paid: '未付款',
                         amount: 0.00,
                         numbers: 0,
                         provider_name: ""

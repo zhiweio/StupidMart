@@ -138,7 +138,7 @@
                     <el-table-column prop="age" label="年龄" width="150">
                         <template slot-scope="scope">
                             <el-input-number v-model="scope.row.age"
-                            size="small" :min="1" :max="200"></el-input-number>
+                            size="small" :min="0" :max="200"></el-input-number>
                             <span>{[scope.row.age]}</span>
                         </template>
                     </el-table-column>
@@ -149,7 +149,7 @@
                             <span>{[scope.row.telephone]}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="address" label="地址" width="150">
+                    <el-table-column prop="address" label="地址" width="200">
                         <template slot-scope="scope">
                             <el-input size="small" v-model="scope.row.address" placeholder="请输入内容"></el-input>
                             <span>{[scope.row.address]}</span>
@@ -170,7 +170,7 @@
                         </template>
                     </el-table-column>
 
-                    <el-table-column prop="birthday" label="出生日期" width="300">
+                    <el-table-column prop="birthday" label="出生日期" width="150">
                         <template slot-scope="scope">
                             <el-date-picker
                                   v-model="scope.row.birthday"
@@ -196,12 +196,6 @@
                                icon="el-icon-upload"
                                @click="handleEdit(scope.$index, scope.row)">更新
                           </el-button>
-<!--                           <el-button
-                               size="mini"
-                               type="success"
-                               icon="el-icon-check"
-                               @click="handleView(scope.$index)">查看
-                          </el-button> -->
                       </template>
                     </el-table-column>
                   </el-table>
@@ -229,20 +223,12 @@
             delimiters: ['{[', ']}'],
             data: {
                 toSearch: "",
-                tableData: [{
-                    user_sn: '20160503',
-                    username: '王小虎',
-                    gender: '男',
-                    age: 21,
-                    telephone: '18896501500',
-                    role: '管理员',
-                    address: ''
-                }],
+                tableData: [],
                 genderOptions: [{
-                    value: 'man',
+                    value: '男',
                     label: '男'
                     }, {
-                    value: 'woman',
+                    value: '女',
                     label: '女'
                 }],
                 roleOptions: [{
@@ -262,8 +248,20 @@
                 axios.get('/admin/api/list/')
                     .then(function (res) {
                         if (res.data.status_code === 0) {
-                            var users = res.data.data;
+                            let users = res.data.data;
+                            for (x in users) {
+                                let gender = users[x].gender;
+                                if (gender === true) {
+                                    users[x].gender = '女';
+                                }
+                                else {
+                                    users[x].gender = '男';
+                                }
+                            }
                             this.app.tableData = users;
+                        }
+                        else {
+                            alert(res.data['messsages']);
                         }
                 }).catch(function (error) {
                     console.log(error);
@@ -279,8 +277,8 @@
                         birthday: new Date(),
                         username: "",
                         telephone: "",
-                        gender: 'man',
-                        age: 1,
+                        gender: '男',
+                        age: 0,
                         role: "User",
                         address: ""
                     };

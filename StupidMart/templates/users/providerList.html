@@ -6,6 +6,48 @@
     <link rel="stylesheet" href="../../static/assets/css/public.css"/>
     <link rel="stylesheet" href="../../static/assets/css/style.css"/>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            padding-top: 0px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #495060;
+            background-color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #fff;
+        }
+
+        /* 可编辑表格 */
+
+        .el-tb-edit .el-input,
+        .el-tb-edit .el-input-number,
+        .el-tb-edit .el-select {
+            display: none;
+            width: 100%;
+        }
+
+        .el-tb-edit .current-row .el-input,
+        .el-tb-edit .current-row .el-input-number,
+        .el-tb-edit .current-row .el-select {
+            display: inherit;
+        }
+
+        .el-tb-edit .current-row .el-input+span,
+        .el-tb-edit .current-row .el-input-number+span,
+        .el-tb-edit .current-row .el-select+span {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <!--头部-->
@@ -65,17 +107,17 @@
                         class="el-tb-edit"
                         @current-change="handleCurrentChange"
                         ref="demoTable">
-                <el-table-column fixed prop="provider_sn" label="供应商编码" width="150">
+                <el-table-column fixed prop="provider_sn" label="供应商编码" width="200">
                     <template slot-scope="scope">
                         <el-input size="small" v-model="scope.row.provider_sn" placeholder="请输入内容"></el-input>
-                        <!-- <span>{[scope.row.provider_sn]}</span> -->
+                        <span>{[scope.row.provider_sn]}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="provider_name" label="供应商名称" width="120">
+                <el-table-column prop="provider_name" label="供应商名称" width="200">
                     <template slot-scope="scope">
                         <el-input size="small" v-model="scope.row.provider_name" placeholder="请输入内容"></el-input>
-                        <!-- <span>{[scope.row.provider_name]}</span> -->
+                        <span>{[scope.row.provider_name]}</span>
                     </template>
                 </el-table-column>
 
@@ -83,36 +125,36 @@
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.contact"
                         size="small" placeholder="请输入内容"></el-input>
-                        <!-- <span>{[scope.row.contact]}</span> -->
+                        <span>{[scope.row.contact]}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="telephone" label="电话" width="120">
+                <el-table-column prop="telephone" label="电话" width="150">
                     <template slot-scope="scope">
                         <el-input size="small" v-model="scope.row.telephone" placeholder="请输入内容"></el-input>
-                        <!-- <span>{[scope.row.telephone]}</span> -->
+                        <span>{[scope.row.telephone]}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="fax" label="传真" width="150">
                     <template slot-scope="scope">
                         <el-input size="small" v-model="scope.row.fax" placeholder="请输入传真号"></el-input>
-                        <!-- <span>{[scope.row.fax]}</span> -->
+                        <span>{[scope.row.fax]}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="address" label="地址" width="150">
+                <el-table-column prop="address" label="地址" width="200">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.address"
                         size="small" placeholder="请输入地址"></el-input>
-                        <!-- <span>{[scope.row.address]}</span> -->
+                        <span>{[scope.row.address]}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="description" label="描述" width="150">
+                <el-table-column prop="description" label="描述" width="200">
                     <template slot-scope="scope">
                         <el-input v-model="scope.row.description"
                         size="small" placeholder="请输入内容"></el-input>
-                        <!-- <span>{[scope.row.description]}</span> -->
+                        <span>{[scope.row.description]}</span>
                     </template>
                 </el-table-column>
 
