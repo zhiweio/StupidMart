@@ -257,13 +257,6 @@ def api_bill_delete():
         return jsonify({'messages': messages, 'status_code': status_code})
 
 
-# Bill edit page
-@blueprint.route('/bill/edit/', methods=['GET', 'POST'])
-@login_required
-def bill_edit():
-    return render_template('users/billUpdate.html')
-
-
 # Bill edit api
 @blueprint.route('/api/bill/edit/', methods=['GET', 'POST'])
 @login_required
@@ -275,7 +268,7 @@ def api_bill_edit():
         unit = data.get('unit', None)
         numbers = float(data.get('numbers', '0.00'))
         amount = float(data.get('amount', '0.00'))
-        provider_name = data.get('provide_rname', None)
+        provider_name = data.get('provider_name', None)
         is_paid = 0 if data.get('is_paid', '未付款') == '未付款' else 1
 
         if bill_sn and product and unit and provider_name:
@@ -292,6 +285,9 @@ def api_bill_edit():
                 db.session.commit()
                 messages = 'Update bill info successful.'
                 status_code = 0   # Success
+            else:
+                messages = "No Bill {} info.".format(bill_sn)
+                status_code = 2
         else:
             messages = 'Exist empty fields.'
             status_code = 2       # FAILED
