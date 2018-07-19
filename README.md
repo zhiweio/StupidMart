@@ -1,6 +1,8 @@
 # StupidMart
 
-暑期实训作业
+暑期实训作业，超市订单管理系统，视频演示地址 [百度云](https://pan.baidu.com/play/video#/video?path=%2FDemo%2FStupidMart-Demo.mp4&t=-1)
+
+README 文档是用 [cookiecutter-flask](https://github.com/sloria/cookiecutter-flask) 模板改的，懒得重新写了，所以就没改成中文
 
 ## Quickstart
 
